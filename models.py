@@ -13,6 +13,7 @@ class Cartridge:
     quantity: int
     quantity_temp: int
     broken: bool
+    dynamic: int
 
 
 class CartridgeInfoGen:

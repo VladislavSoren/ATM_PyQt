@@ -45,7 +45,7 @@ class Ui_MainWindow(object):
         self.btn_randomise.setObjectName("btn_randomise")
 
         self.num_money = QtWidgets.QSpinBox(self.centralwidget)
-        self.num_money.setGeometry(QtCore.QRect(330, 20, 141, 19))
+        self.num_money.setGeometry(QtCore.QRect(330, 20, 141, 30))
         self.num_money.setMaximum(1000000000)
         self.num_money.setObjectName("num_money")
 
@@ -58,12 +58,11 @@ class Ui_MainWindow(object):
         self.box_banknote_type_0 = QtWidgets.QComboBox(self.splitter)
         self.box_banknote_type_0.setEditable(False)
         self.box_banknote_type_0.setObjectName("box_banknote_type_0")
-        self.box_banknote_type_0.addItem("")
-        self.box_banknote_type_0.addItem("")
         self.label_remaining_quantity_0 = QtWidgets.QLabel(self.splitter)
         self.label_remaining_quantity_0.setObjectName("label_remaining_quantity_0")
-        self.flag_fault_status_0 = QtWidgets.QCheckBox(self.splitter)
-        self.flag_fault_status_0.setObjectName("flag_fault_status_0")
+        self.flag_broken_0 = QtWidgets.QCheckBox(self.splitter)
+        self.flag_broken_0.setObjectName("flag_broken_0")
+
         self.splitter_1 = QtWidgets.QSplitter(self.centralwidget)
         self.splitter_1.setGeometry(QtCore.QRect(30, 90, 341, 19))
         self.splitter_1.setOrientation(QtCore.Qt.Horizontal)
@@ -73,12 +72,11 @@ class Ui_MainWindow(object):
         self.box_banknote_type_1 = QtWidgets.QComboBox(self.splitter_1)
         self.box_banknote_type_1.setEditable(False)
         self.box_banknote_type_1.setObjectName("box_banknote_type_1")
-        self.box_banknote_type_1.addItem("")
-        self.box_banknote_type_1.addItem("")
         self.label_remaining_quantity_1 = QtWidgets.QLabel(self.splitter_1)
         self.label_remaining_quantity_1.setObjectName("label_remaining_quantity_1")
-        self.flag_fault_status_1 = QtWidgets.QCheckBox(self.splitter_1)
-        self.flag_fault_status_1.setObjectName("flag_fault_status_1")
+        self.flag_broken_1 = QtWidgets.QCheckBox(self.splitter_1)
+        self.flag_broken_1.setObjectName("flag_broken_1")
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -88,11 +86,22 @@ class Ui_MainWindow(object):
         self.num_cartridges.valueChanged.connect(self.num_cartridges_changed)
         self.num_money.valueChanged.connect(self.num_money_changed)
         self.btn_calc_result.clicked.connect(self.calc_result)
-        self.btn_randomise.clicked.connect(self.randomise)
+        self.btn_randomise.clicked.connect(self.btn_randomise_clicked)
+        self.box_banknote_type_0.currentIndexChanged.connect(self.dropbox_0_changed)
+        self.flag_broken_0.stateChanged.connect(self.flag_broken_0_changed)
 
         # Дефолтная видимость
         self.splitter.hide()
         self.splitter_1.hide()
+
+    def dropbox_0_changed(self):
+        print('dropbox_0_changed')
+        self.cartridges[0].banknote_type = self.box_banknote_type_0.currentText()
+        self.cartridges[0].banknote_type_index = self.box_banknote_type_0.currentIndex()
+
+    def flag_broken_0_changed(self):
+        self.cartridges[0].broken = self.flag_broken_0.isChecked()
+        print(f"QCheckBox is checked: {self.cartridges[0].broken}")
 
     def calc_result(self):
 
@@ -106,26 +115,29 @@ class Ui_MainWindow(object):
             # Проверяем есть ли купюры в кассетах данного типа
             for current_cartridge in self.cartridges_type_objs_dict[current_banknote_type]:
 
-                # Находим остаток и расходуемое кол-во купюр
-                rest = self.num_money_temp % current_banknote_type
-                count = self.num_money_temp // current_banknote_type
+                # Если кассета исправна, то учитываем её в расчётах
+                if not current_cartridge.broken:
 
-                # Если остатка нет и нам хватает купюр -> Перерасчёт и Выдача (Успех)
-                if rest == 0 and count <= current_cartridge.quantity_temp:
-                    current_cartridge.quantity_temp -= count
-                    self.num_money_temp -= count * current_banknote_type
-                    status = Status.SUCCESS
-                    print(status)
-                    stop = True
-                    break
+                    # Находим остаток и расходуемое кол-во купюр
+                    rest = self.num_money_temp % current_banknote_type
+                    count = self.num_money_temp // current_banknote_type
 
-                # Если нам достаточно средств -> Делаем Перерасчёт
-                if count <= current_cartridge.quantity_temp:
-                    current_cartridge.quantity_temp -= count
-                    self.num_money_temp -= count * current_banknote_type
-                # Если НЕ хватает, то БЕЗ перерасчёта идём далее
-                else:
-                    continue
+                    # Если остатка нет и нам хватает купюр -> Перерасчёт и Выдача (Успех)
+                    if rest == 0 and count <= current_cartridge.quantity_temp:
+                        current_cartridge.quantity_temp -= count
+                        self.num_money_temp -= count * current_banknote_type
+                        status = Status.SUCCESS
+                        print(status)
+                        stop = True
+                        break
+
+                    # Если нам достаточно средств -> Делаем Перерасчёт
+                    if count <= current_cartridge.quantity_temp:
+                        current_cartridge.quantity_temp -= count
+                        self.num_money_temp -= count * current_banknote_type
+                    # Если НЕ хватает, то БЕЗ перерасчёта идём далее
+                    else:
+                        continue
 
             if stop:
                 break
@@ -181,13 +193,13 @@ class Ui_MainWindow(object):
             self.cartridges.append(cartridge)
 
     def update_front(self):
+        print("update_front")
 
         if self.num_cartridges.value() > 0:
             self.splitter.show()
             self.box_banknote_type_0.setCurrentIndex(self.cartridges[0].banknote_type_index)
             self.label_remaining_quantity_0.setText(str(self.cartridges[0].quantity))
-            self.flag_fault_status_0.setChecked(self.cartridges[0].broken)
-
+            self.flag_broken_0.setChecked(self.cartridges[0].broken)
         else:
             self.splitter.hide()
 
@@ -195,26 +207,30 @@ class Ui_MainWindow(object):
             self.splitter_1.show()
             self.box_banknote_type_1.setCurrentIndex(self.cartridges[1].banknote_type_index)
             self.label_remaining_quantity_1.setText(str(self.cartridges[1].quantity))
-            self.flag_fault_status_1.setChecked(self.cartridges[1].broken)
-
+            self.flag_broken_1.setChecked(self.cartridges[1].broken)
         else:
             self.splitter_1.hide()
 
     def num_cartridges_changed(self):
         print("num_cartridges_changed")
+        self.randomise()
+        self.update_front()
 
+    def btn_randomise_clicked(self):
+        print("btn_randomise_clicked")
         self.randomise()
         self.update_front()
 
     def num_money_changed(self):
+        print("num_money_changed")
         self.num_money_temp = self.num_money.value()
-        pass
 
     # Наполняем фронт
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "ATM"))
         self.btn_calc_result.setText(_translate("MainWindow", "Выдать"))
+        self.btn_randomise.setText(_translate("MainWindow", "Рандомное заполнение"))
         self.label_n_0.setText(_translate("MainWindow", "1"))
 
         # Заполнение box_banknote_type_1
@@ -223,7 +239,7 @@ class Ui_MainWindow(object):
             self.box_banknote_type_0.addItem(_translate("MainWindow", str(banknote_type)))
 
         self.label_remaining_quantity_0.setText(_translate("MainWindow", "TextLabel"))
-        self.flag_fault_status_0.setText(_translate("MainWindow", "CheckBox"))
+        self.flag_broken_0.setText(_translate("MainWindow", "Несправна"))
 
         self.label_n_1.setText(_translate("MainWindow", "2"))
 
@@ -233,7 +249,7 @@ class Ui_MainWindow(object):
             self.box_banknote_type_1.addItem(_translate("MainWindow", str(banknote_type)))
 
         self.label_remaining_quantity_1.setText(_translate("MainWindow", "TextLabel"))
-        self.flag_fault_status_1.setText(_translate("MainWindow", "CheckBox"))
+        self.flag_broken_1.setText(_translate("MainWindow", "Несправна"))
 
 
 if __name__ == "__main__":
