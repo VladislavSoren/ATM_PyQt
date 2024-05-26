@@ -1,0 +1,4 @@
+Front migrate on Win (global):
+- pip install pyqt5
+- pip install pyqt5-tools
+- pyuic5 -x main_0.ui -o main.py
