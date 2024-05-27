@@ -4,7 +4,6 @@ import time
 from PyQt5 import QtCore, QtWidgets
 
 from config import BANKNOTE_TYPES, MAX_CARTRIDGES, MAX_QUANTITY_BANKNOTES, MAX_QUANTITY_SUM
-from dop import log_time
 from models import Cartridge, CartridgeInfoGen, Status
 
 # Параметры логирования
@@ -41,11 +40,11 @@ class Ui_MainWindow(object):
         self.num_cartridges.setObjectName("num_cartridges")
 
         self.btn_calc_result = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_calc_result.setGeometry(QtCore.QRect(300, 310, 131, 61))
+        self.btn_calc_result.setGeometry(QtCore.QRect(300, 340, 131, 61))
         self.btn_calc_result.setObjectName("btn_calc_result")
 
         self.btn_randomise = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_randomise.setGeometry(QtCore.QRect(100, 310, 185, 61))
+        self.btn_randomise.setGeometry(QtCore.QRect(100, 340, 185, 61))
         self.btn_randomise.setObjectName("btn_randomise")
 
         self.num_money = QtWidgets.QSpinBox(self.centralwidget)
@@ -53,9 +52,36 @@ class Ui_MainWindow(object):
         self.num_money.setMaximum(MAX_QUANTITY_SUM)
         self.num_money.setObjectName("num_money")
 
+        # splitter_head
+        self.splitter_head = QtWidgets.QSplitter(self.centralwidget)
+        self.splitter_head.setGeometry(QtCore.QRect(30, 60, 360, 19))
+        self.splitter_head.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter_head.setObjectName("splitter_head")
+        self.label_n = QtWidgets.QLabel(self.splitter_head)
+        self.label_n.setObjectName("label_n_0")
+        self.label_n.setText('№')
+
+        self.label_nominal = QtWidgets.QLabel(self.splitter_head)
+        self.label_nominal.setObjectName("label_nominal")
+        self.label_nominal.setText('Номинал')
+
+        self.label_rest = QtWidgets.QLabel(self.splitter_head)
+        self.label_rest.setObjectName("label_rest")
+        self.label_rest.setText('N осталось')
+
+        self.label_num_gived = QtWidgets.QLabel(self.splitter_head)
+        self.label_num_gived.setObjectName("label_num_gived")
+        self.label_num_gived.setText('N выдано')
+
+        self.label_broken_status = QtWidgets.QLabel(self.splitter_head)
+        self.label_broken_status.setObjectName("label_broken_status")
+        self.label_broken_status.setText('Статус')
+
+
+
         # splitter
         self.splitter = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter.setGeometry(QtCore.QRect(30, 60, 341, 19))
+        self.splitter.setGeometry(QtCore.QRect(30, 90, 341, 19))
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
         self.label_n_0 = QtWidgets.QLabel(self.splitter)
@@ -73,7 +99,7 @@ class Ui_MainWindow(object):
 
         # splitter_1
         self.splitter_1 = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_1.setGeometry(QtCore.QRect(30, 90, 341, 19))
+        self.splitter_1.setGeometry(QtCore.QRect(30, 120, 341, 19))
         self.splitter_1.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_1.setObjectName("splitter_1")
         self.label_n_1 = QtWidgets.QLabel(self.splitter_1)
@@ -91,7 +117,7 @@ class Ui_MainWindow(object):
 
         # splitter_2
         self.splitter_2 = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_2.setGeometry(QtCore.QRect(30, 120, 341, 19))
+        self.splitter_2.setGeometry(QtCore.QRect(30, 150, 341, 19))
         self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_2.setObjectName("splitter_2")
         self.label_n_2 = QtWidgets.QLabel(self.splitter_2)
@@ -109,7 +135,7 @@ class Ui_MainWindow(object):
 
         # splitter_3
         self.splitter_3 = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_3.setGeometry(QtCore.QRect(30, 150, 341, 19))
+        self.splitter_3.setGeometry(QtCore.QRect(30, 180, 341, 19))
         self.splitter_3.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_3.setObjectName("splitter_3")
         self.label_n_3 = QtWidgets.QLabel(self.splitter_3)
@@ -127,7 +153,7 @@ class Ui_MainWindow(object):
 
         # splitter_4
         self.splitter_4 = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_4.setGeometry(QtCore.QRect(30, 180, 341, 19))
+        self.splitter_4.setGeometry(QtCore.QRect(30, 210, 341, 19))
         self.splitter_4.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_4.setObjectName("splitter_4")
         self.label_n_4 = QtWidgets.QLabel(self.splitter_4)
@@ -145,7 +171,7 @@ class Ui_MainWindow(object):
 
         # splitter_5
         self.splitter_5 = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_5.setGeometry(QtCore.QRect(30, 210, 341, 19))
+        self.splitter_5.setGeometry(QtCore.QRect(30, 240, 341, 19))
         self.splitter_5.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_5.setObjectName("splitter_5")
         self.label_n_5 = QtWidgets.QLabel(self.splitter_5)
@@ -163,7 +189,7 @@ class Ui_MainWindow(object):
 
         # splitter_6
         self.splitter_6 = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_6.setGeometry(QtCore.QRect(30, 240, 341, 19))
+        self.splitter_6.setGeometry(QtCore.QRect(30, 270, 341, 19))
         self.splitter_6.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_6.setObjectName("splitter_6")
         self.label_n_6 = QtWidgets.QLabel(self.splitter_6)
@@ -181,7 +207,7 @@ class Ui_MainWindow(object):
 
         # splitter_7
         self.splitter_7 = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_7.setGeometry(QtCore.QRect(30, 270, 341, 19))
+        self.splitter_7.setGeometry(QtCore.QRect(30, 300, 341, 19))
         self.splitter_7.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_7.setObjectName("splitter_7")
         self.label_n_7 = QtWidgets.QLabel(self.splitter_7)
@@ -199,7 +225,7 @@ class Ui_MainWindow(object):
 
         # Результаты
         self.splitter_res = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_res.setGeometry(QtCore.QRect(50, 370, 400, 60))
+        self.splitter_res.setGeometry(QtCore.QRect(50, 400, 400, 60))
         self.splitter_res.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_res.setObjectName("splitter_res")
         self.label_result = QtWidgets.QLabel(self.splitter_res)
@@ -287,83 +313,83 @@ class Ui_MainWindow(object):
 
     # События по изменениям номиналов кассет
     def dropbox_0_changed(self):
-        print(f'dropbox_0_changed')
+        logger.info(f'dropbox_0_changed')
         self.dropbox_changed(0, self.box_banknote_type_0)
 
     def dropbox_1_changed(self):
-        print('dropbox_1_changed')
+        logger.info('dropbox_1_changed')
         self.dropbox_changed(1, self.box_banknote_type_1)
 
     def dropbox_2_changed(self):
-        print('dropbox_2_changed')
+        logger.info('dropbox_2_changed')
         self.dropbox_changed(2, self.box_banknote_type_2)
 
     def dropbox_3_changed(self):
-        print('dropbox_3_changed')
+        logger.info('dropbox_3_changed')
         self.dropbox_changed(3, self.box_banknote_type_3)
 
     def dropbox_4_changed(self):
-        print('dropbox_4_changed')
+        logger.info('dropbox_4_changed')
         self.dropbox_changed(4, self.box_banknote_type_4)
 
     def dropbox_5_changed(self):
-        print('dropbox_5_changed')
+        logger.info('dropbox_5_changed')
         self.dropbox_changed(5, self.box_banknote_type_5)
 
     def dropbox_6_changed(self):
-        print('dropbox_6_changed')
+        logger.info('dropbox_6_changed')
         self.dropbox_changed(6, self.box_banknote_type_6)
 
     def dropbox_7_changed(self):
-        print('dropbox_7_changed')
+        logger.info('dropbox_7_changed')
         self.dropbox_changed(6, self.box_banknote_type_7)
 
     # События по изменениям кол-ва банкнот в кассетах
     def num_remaining_quantity_0_changed(self):
         index = 0
-        print(f'num_remaining_quantity_{index}_changed')
+        logger.info(f'num_remaining_quantity_{index}_changed')
         self.cartridges[index].quantity = self.num_remaining_quantity_0.value()
         self.cartridges[index].quantity_temp = self.num_remaining_quantity_0.value()
 
     def num_remaining_quantity_1_changed(self):
         index = 1
-        print(f'num_remaining_quantity_{index}_changed')
+        logger.info(f'num_remaining_quantity_{index}_changed')
         self.cartridges[index].quantity = self.num_remaining_quantity_1.value()
         self.cartridges[index].quantity_temp = self.num_remaining_quantity_1.value()
 
     def num_remaining_quantity_2_changed(self):
         index = 2
-        print(f'num_remaining_quantity_{index}_changed')
+        logger.info(f'num_remaining_quantity_{index}_changed')
         self.cartridges[index].quantity = self.num_remaining_quantity_2.value()
         self.cartridges[index].quantity_temp = self.num_remaining_quantity_2.value()
 
     def num_remaining_quantity_3_changed(self):
         index = 3
-        print(f'num_remaining_quantity_{index}_changed')
+        logger.info(f'num_remaining_quantity_{index}_changed')
         self.cartridges[index].quantity = self.num_remaining_quantity_3.value()
         self.cartridges[index].quantity_temp = self.num_remaining_quantity_3.value()
 
     def num_remaining_quantity_4_changed(self):
         index = 4
-        print(f'num_remaining_quantity_{index}_changed')
+        logger.info(f'num_remaining_quantity_{index}_changed')
         self.cartridges[index].quantity = self.num_remaining_quantity_4.value()
         self.cartridges[index].quantity_temp = self.num_remaining_quantity_4.value()
 
     def num_remaining_quantity_5_changed(self):
         index = 5
-        print(f'num_remaining_quantity_{index}_changed')
+        logger.info(f'num_remaining_quantity_{index}_changed')
         self.cartridges[index].quantity = self.num_remaining_quantity_5.value()
         self.cartridges[index].quantity_temp = self.num_remaining_quantity_5.value()
 
     def num_remaining_quantity_6_changed(self):
         index = 6
-        print(f'num_remaining_quantity_{index}_changed')
+        logger.info(f'num_remaining_quantity_{index}_changed')
         self.cartridges[index].quantity = self.num_remaining_quantity_6.value()
         self.cartridges[index].quantity_temp = self.num_remaining_quantity_6.value()
 
     def num_remaining_quantity_7_changed(self):
         index = 7
-        print(f'num_remaining_quantity_{index}_changed')
+        logger.info(f'num_remaining_quantity_{index}_changed')
         self.cartridges[index].quantity = self.num_remaining_quantity_7.value()
         self.cartridges[index].quantity_temp = self.num_remaining_quantity_7.value()
 
@@ -371,45 +397,44 @@ class Ui_MainWindow(object):
     def flag_broken_0_changed(self):
         index = 0
         self.cartridges[index].broken = self.flag_broken_0.isChecked()
-        print(f"QCheckBox is checked: {self.cartridges[index].broken}")
+        logger.info(f"QCheckBox is checked: {self.cartridges[index].broken}")
 
     def flag_broken_1_changed(self):
         index = 1
         self.cartridges[index].broken = self.flag_broken_1.isChecked()
-        print(f"QCheckBox is checked: {self.cartridges[index].broken}")
+        logger.info(f"QCheckBox is checked: {self.cartridges[index].broken}")
 
     def flag_broken_2_changed(self):
         index = 2
         self.cartridges[index].broken = self.flag_broken_2.isChecked()
-        print(f"QCheckBox is checked: {self.cartridges[index].broken}")
+        logger.info(f"QCheckBox is checked: {self.cartridges[index].broken}")
 
     def flag_broken_3_changed(self):
         index = 3
         self.cartridges[index].broken = self.flag_broken_3.isChecked()
-        print(f"QCheckBox is checked: {self.cartridges[index].broken}")
+        logger.info(f"QCheckBox is checked: {self.cartridges[index].broken}")
 
     def flag_broken_4_changed(self):
         index = 4
         self.cartridges[index].broken = self.flag_broken_4.isChecked()
-        print(f"QCheckBox is checked: {self.cartridges[index].broken}")
+        logger.info(f"QCheckBox is checked: {self.cartridges[index].broken}")
 
     def flag_broken_5_changed(self):
         index = 5
         self.cartridges[index].broken = self.flag_broken_5.isChecked()
-        print(f"QCheckBox is checked: {self.cartridges[index].broken}")
+        logger.info(f"QCheckBox is checked: {self.cartridges[index].broken}")
 
     def flag_broken_6_changed(self):
         index = 6
         self.cartridges[index].broken = self.flag_broken_6.isChecked()
-        print(f"QCheckBox is checked: {self.cartridges[index].broken}")
+        logger.info(f"QCheckBox is checked: {self.cartridges[index].broken}")
 
     def flag_broken_7_changed(self):
         index = 7
         self.cartridges[index].broken = self.flag_broken_7.isChecked()
-        print(f"QCheckBox is checked: {self.cartridges[index].broken}")
+        logger.info(f"QCheckBox is checked: {self.cartridges[index].broken}")
 
     # Расчёт результата
-    @log_time(logger=logger, description='calc_result')
     def calc_result(self):
         start = time.time() * 1_000_000
 
@@ -436,7 +461,7 @@ class Ui_MainWindow(object):
                         self.num_money_temp -= count * current_banknote_type
                         current_cartridge.dynamic_temp = current_cartridge.quantity - current_cartridge.quantity_temp
                         status = Status.SUCCESS
-                        print(status)
+                        logger.info(status)
                         stop = True
                         break
 
@@ -453,7 +478,7 @@ class Ui_MainWindow(object):
 
             # Если мы прошлись по всем кассетам, но не смогли набрать сумму -> Недостаточно средств
             if self.start_banknote_type_index == -(MAX_CARTRIDGES - 1):
-                print(status)
+                logger.info(status)
                 break
 
         # Если успешно, то заменяем основные на temp
@@ -486,7 +511,7 @@ class Ui_MainWindow(object):
         self.update_front()
 
     def randomise(self):
-        print("randomise")
+        logger.info("randomise")
 
         # Очищаем старые данные
         for key in self.cartridges_type_objs_dict.keys():
@@ -513,7 +538,7 @@ class Ui_MainWindow(object):
             self.cartridges.append(cartridge)
 
     def update_front(self):
-        print("update_front")
+        logger.info("update_front")
 
         # Обновляем статус результата расчёта и время
         self.label_result.setText(str(self.result_status))
@@ -611,17 +636,17 @@ class Ui_MainWindow(object):
             self.splitter_7.hide()
 
     def num_cartridges_changed(self):
-        print("num_cartridges_changed")
+        logger.info("num_cartridges_changed")
         self.randomise()
         self.update_front()
 
     def btn_randomise_clicked(self):
-        print("btn_randomise_clicked")
+        logger.info("btn_randomise_clicked")
         self.randomise()
         self.update_front()
 
     def num_money_changed(self):
-        print("num_money_changed")
+        logger.info("num_money_changed")
         self.num_money_temp = self.num_money.value()
 
     # Наполняем фронт
