@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from random import choice, randint
 
-from config import BANKNOTE_TYPES, MAX_QUANTITY
+from config import BANKNOTE_TYPES, MAX_QUANTITY_BANKNOTES
 
 
 @dataclass
@@ -14,7 +14,7 @@ class Cartridge:
     quantity_temp: int
     broken: bool
     dynamic: int
-
+    dynamic_temp: int
 
 class CartridgeInfoGen:
     @staticmethod
@@ -23,7 +23,7 @@ class CartridgeInfoGen:
 
     @staticmethod
     def gen_quantity():
-        return randint(0, MAX_QUANTITY)
+        return randint(0, MAX_QUANTITY_BANKNOTES)
 
     @staticmethod
     def gen_broken():
