@@ -436,10 +436,15 @@ class Ui_MainWindow(object):
 
     # Расчёт результата
     def calc_result(self):
-        start = time.time() * 1_000_000
+        start = time.time() * 1_000
 
         stop = False
         status = Status.FAULT
+
+        # Обнуляем поля динамики (кол-ва выдачи) с предыдущей операции
+        for cartridge in self.cartridges:
+            cartridge.dynamic = 0
+            cartridge.dynamic_temp = 0
 
         while True:
             # Начинаем с самого крупного номинала
@@ -496,7 +501,7 @@ class Ui_MainWindow(object):
                 cartridge.dynamic_temp = cartridge.dynamic
 
         # Рассчитываем время исполнения
-        end = time.time() * 1_000_000
+        end = time.time() * 1_000
         calc_time = end - start
         # calc_time = round(end - start, 10)
 
@@ -543,7 +548,7 @@ class Ui_MainWindow(object):
         # Обновляем статус результата расчёта и время
         self.label_result.setText(str(self.result_status))
         self.label_calc_time.setText(str(self.calc_time))
-        self.label_mks.setText("microsecond")
+        self.label_mks.setText("milliseconds")  # По ТЗ
 
         if self.num_cartridges.value() > 0:
             index = 0
