@@ -16,6 +16,7 @@ class Cartridge:
     dynamic: int
     dynamic_temp: int
 
+
 class CartridgeInfoGen:
     @staticmethod
     def gen_banknote_type_index():
