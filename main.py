@@ -18,6 +18,7 @@ class Ui_MainWindow(object):
 
     def __init__(self, MainWindow):
         self.MainWindow = MainWindow
+        self.num_money = 0
         self.num_money_temp = 0
         self.banknote_types = sorted(BANKNOTE_TYPES)
         self.cartridges_type_objs_dict = {}
@@ -27,6 +28,7 @@ class Ui_MainWindow(object):
         self.start_banknote_type_index = -1
         self.result_status = None
         self.calc_time = 0
+        self.test_mode = False
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -47,14 +49,14 @@ class Ui_MainWindow(object):
         self.btn_randomise.setGeometry(QtCore.QRect(100, 340, 185, 61))
         self.btn_randomise.setObjectName("btn_randomise")
 
-        self.num_money = QtWidgets.QSpinBox(self.centralwidget)
-        self.num_money.setGeometry(QtCore.QRect(330, 10, 140, 30))
-        self.num_money.setMaximum(MAX_QUANTITY_SUM)
-        self.num_money.setObjectName("num_money")
+        self.num_money_front = QtWidgets.QSpinBox(self.centralwidget)
+        self.num_money_front.setGeometry(QtCore.QRect(330, 10, 140, 30))
+        self.num_money_front.setMaximum(MAX_QUANTITY_SUM)
+        self.num_money_front.setObjectName("num_money")
 
         # splitter_head
         self.splitter_head = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter_head.setGeometry(QtCore.QRect(30, 60, 360, 19))
+        self.splitter_head.setGeometry(QtCore.QRect(30, 60, 400, 19))
         self.splitter_head.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_head.setObjectName("splitter_head")
         self.label_n = QtWidgets.QLabel(self.splitter_head)
@@ -67,11 +69,11 @@ class Ui_MainWindow(object):
 
         self.label_rest = QtWidgets.QLabel(self.splitter_head)
         self.label_rest.setObjectName("label_rest")
-        self.label_rest.setText('N осталось')
+        self.label_rest.setText('Осталось')
 
         self.label_num_gived = QtWidgets.QLabel(self.splitter_head)
         self.label_num_gived.setObjectName("label_num_gived")
-        self.label_num_gived.setText('N выдано')
+        self.label_num_gived.setText('Выдано')
 
         self.label_broken_status = QtWidgets.QLabel(self.splitter_head)
         self.label_broken_status.setObjectName("label_broken_status")
@@ -81,21 +83,49 @@ class Ui_MainWindow(object):
 
         # splitter
         self.splitter = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter.setGeometry(QtCore.QRect(30, 90, 341, 19))
+        self.splitter.setGeometry(QtCore.QRect(30, 90, 430, 19))
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
+
         self.label_n_0 = QtWidgets.QLabel(self.splitter)
         self.label_n_0.setObjectName("label_n_0")
+        self.label_n_0.setText("Label 0")
+
         self.box_banknote_type_0 = QtWidgets.QComboBox(self.splitter)
         self.box_banknote_type_0.setEditable(False)
         self.box_banknote_type_0.setObjectName("box_banknote_type_0")
+
         self.num_remaining_quantity_0 = QtWidgets.QSpinBox(self.splitter)
         self.num_remaining_quantity_0.setMaximum(MAX_QUANTITY_BANKNOTES)
         self.num_remaining_quantity_0.setObjectName("num_remaining_quantity_0")
-        self.label_dynamic_0 = QtWidgets.QLabel(self.splitter)
+
+        # Создание контейнера для label_dynamic_0 и flag_broken_0 с отступом между ними
+        container_widget = QtWidgets.QWidget(self.splitter)
+        container_layout = QtWidgets.QHBoxLayout(container_widget)
+        container_layout.setContentsMargins(0, 0, 0, 0)  # Убираем отступы контейнера
+
+        self.label_dynamic_0 = QtWidgets.QLabel(container_widget)
         self.label_dynamic_0.setObjectName("label_dynamic_0")
-        self.flag_broken_0 = QtWidgets.QCheckBox(self.splitter)
+        self.label_dynamic_0.setText("Dynamic Label 0")
+
+        # Добавление spacerItem для создания отступа
+        spacer = QtWidgets.QWidget(container_widget)
+        spacer.setMinimumWidth(20)
+        # spacer.setFixedWidth(20)  # Устанавливаем фиксированную ширину отступа
+
+        self.flag_broken_0 = QtWidgets.QCheckBox(container_widget)
         self.flag_broken_0.setObjectName("flag_broken_0")
+        self.flag_broken_0.setText("Broken 0")
+
+        # Добавление виджетов и spacerItem в контейнер
+        container_layout.addWidget(self.label_dynamic_0)
+        container_layout.addWidget(spacer)
+        container_layout.addWidget(self.flag_broken_0)
+
+        # # Установка размеров для каждой секции
+        # self.splitter.setSizes([50, 70, 70, 100, 70])
+        #
+
 
         # splitter_1
         self.splitter_1 = QtWidgets.QSplitter(self.centralwidget)
@@ -242,7 +272,7 @@ class Ui_MainWindow(object):
 
         # События
         self.num_cartridges.valueChanged.connect(self.num_cartridges_changed)
-        self.num_money.valueChanged.connect(self.num_money_changed)
+        self.num_money_front.valueChanged.connect(self.num_money_changed)
         self.btn_calc_result.clicked.connect(self.calc_result)
         self.btn_randomise.clicked.connect(self.btn_randomise_clicked)
 
@@ -436,6 +466,10 @@ class Ui_MainWindow(object):
 
     # Расчёт результата
     def calc_result(self):
+        
+        # # Определение режима запуска
+        # self.test_mode = isinstance(self.num_money_front, int)
+
         start = time.time() * 1_000
 
         stop = False
@@ -490,20 +524,19 @@ class Ui_MainWindow(object):
         if status == Status.SUCCESS:
             for cartridge in self.cartridges:
                 cartridge.quantity = cartridge.quantity_temp
-                self.num_money.setValue(self.num_money_temp)
+                self.num_money = self.num_money_temp
                 cartridge.dynamic = cartridge.dynamic_temp
 
         # Если нет, то temp на основные
         if status == Status.FAULT:
             for cartridge in self.cartridges:
                 cartridge.quantity_temp = cartridge.quantity
-                self.num_money_temp = self.num_money.value()
+                self.num_money_temp = self.num_money
                 cartridge.dynamic_temp = cartridge.dynamic
 
         # Рассчитываем время исполнения
         end = time.time() * 1_000
         calc_time = end - start
-        # calc_time = round(end - start, 10)
 
         # Заносим статус
         self.result_status = status
@@ -513,7 +546,8 @@ class Ui_MainWindow(object):
         self.start_banknote_type_index = -1
 
         # Обновляем фронт
-        self.update_front()
+        if not self.test_mode:
+            self.update_front()
 
     def randomise(self):
         logger.info("randomise")
@@ -544,6 +578,9 @@ class Ui_MainWindow(object):
 
     def update_front(self):
         logger.info("update_front")
+
+        # Обновляем кол-во банконот на фронте
+        self.num_money_front.setValue(self.num_money)
 
         # Обновляем статус результата расчёта и время
         self.label_result.setText(str(self.result_status))
@@ -652,7 +689,8 @@ class Ui_MainWindow(object):
 
     def num_money_changed(self):
         logger.info("num_money_changed")
-        self.num_money_temp = self.num_money.value()
+        self.num_money = self.num_money_front.value()
+        self.num_money_temp = self.num_money_front.value()
 
     # Наполняем фронт
     def retranslateUi(self, MainWindow):
